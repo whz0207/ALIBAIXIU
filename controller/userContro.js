@@ -53,15 +53,5 @@ module.exports = {
         })
     },
 
-    // 获取编辑页面
-    getEdit: (req, res) => {
-        //1. 获取点击编辑的 id
-        var id = req.query.id;
-        //2. 根据 id 从数据库中获取数据
-        let editSql = `SELECT * FROM users WHERE id = ${id}`;
-        //3. 执行 SQL 语句
-        userdb.query(editSql, result => {
-            res.render('post-add',result[0]);
-        })
-    }
+    
 }

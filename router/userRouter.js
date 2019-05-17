@@ -24,9 +24,7 @@ router.get('/delUser', (req, res) => {
 })
 
 // 添加一个获取编辑页面的路由
-router.get('/post-add',(req,res)=>{
-    userContro.getEdit(req,res);
-})
+
 
 //暴露接口
 module.exports = router;
