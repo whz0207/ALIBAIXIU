@@ -9,6 +9,7 @@ const bodyParse = require('body-parser');
 
 //引入路由文件
 const userRouter = require('./router/userRouter');
+const categoriesRouter = require('./router/categoriesRouter');
 
 const app = express();
 
@@ -25,7 +26,8 @@ app.use('/assets', express.static('./assets'));
 app.use('/static/uploads', express.static('./uploads'));
 
 //注册路由中间件
-app.use(userRouter);
+app.use(userRouter); //与用户相关的路由
+app.use(categoriesRouter); //与分类相关的路由
 
 app.listen(3000, () => {
     console.log('running...');
