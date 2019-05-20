@@ -3,7 +3,10 @@ const categoriesdb = require('../model/categoriesdb');
 module.exports = {
     // 返回 categories 页面
     categories: (req, res) => {
-        res.render('categories', {});
+        //传入 nickname,avatar
+        let nickname = req.session.user.nickname
+        let avatar = req.session.user.avatar
+        res.render('categories', { nickname, avatar })
     },
 
     // 返回所有分类数据

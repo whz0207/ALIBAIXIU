@@ -39,12 +39,29 @@ module.exports = {
             // 要将用户的登录信息保存起来
             req.session.user = {
                 email: parmas.email,
-                password: parmas.password
+                password: parmas.password,
+                // 保存用户登录的昵称,id
+                nickname: result[0].nickname,
+                id: result[0].id,
+                avatar: result[0].avatar
             }
+            // console.log(req.session.user); //{ email: 'wuwuw', password: '123123', nickname: 'ooooo', id: 10 }
+
             res.send({
                 status: 200,
                 msg: '登陆成功'
             })
+        })
+    },
+
+    // 退出登录
+    logout: (req, res) => {
+        // 服务器清除 session 
+        req.session.user = null;
+        // 响应退出成功的信息给浏览器
+        res.send({
+            status:200,
+            msg:'退出成功'
         })
     }
 }

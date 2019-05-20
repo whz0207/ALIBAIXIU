@@ -5,4 +5,24 @@
 <script src="../assets/vendors/template/template.js"></script>
 <script>NProgress.done()</script>
 </body>
+<script>
+    // 退出登录
+    $('#logout').click(function (event) {
+        //阻止默认行为
+        event.preventDefault();
+        // 发送退出请求, 清除浏览器中的 session 
+        $.ajax({
+            url: '/logout',
+            method: 'GET',
+            success: function (res) {
+                if (res.status === 200) {
+                    alert(res.msg);
+                    // 退出成功后跳转到login页面
+                    window.location = '/login';
+                }
+            }
+        })
+    })
+</script>
+
 </html>

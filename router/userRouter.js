@@ -24,6 +24,8 @@ router.get('/user', userContro.getUser)
     .get('/getUserById', userContro.getUserById)  // 添加一个根据id得到数据的路由
     .post('/editUser', userContro.editUser)  // 添加一个修改用户数据的路由
     .post('/delUserByIds', userContro.delUserByIds) //添加一个删除多个用户数据的路由
+    .get('/profile',userContro.profile) //添加一个 显示个人中心页面 的路由
+    .post('/updateProfile',userContro.updateProfile) //添加一个 修改个人信息 的路由
 
 //暴露接口
 module.exports = router;
