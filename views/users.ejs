@@ -164,7 +164,7 @@
     e.preventDefault();
     //2. 使用 form 对象中的 serlialize 方法来接收参数
     var parmas = $('#form').serialize();
-    
+
     //3. 提交数据
     $.ajax({
       url: '/addUser',
@@ -245,6 +245,8 @@
           //将添加新用户区域改为修改用户区域
           let html = template('editUser', data);
           $('#form').html(html);
+        } else if (status === 304) {
+          window.location = '/login'
         }
       }
     })
@@ -315,8 +317,8 @@
       method: 'POST',
       data: parmas,
       success: res => {
-        let {status,msg} = res;
-        if(status === 200) {
+        let { status, msg } = res;
+        if (status === 200) {
           alert(msg);
           //删除成功后重新渲染所有用户数据
           getAllusers();

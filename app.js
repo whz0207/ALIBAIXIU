@@ -9,9 +9,10 @@ const bodyParse = require('body-parser');
 const cookieSession = require('cookie-session');
 
 //引入路由文件
-const userRouter = require('./router/userRouter');
-const categoriesRouter = require('./router/categoriesRouter');
-const loginRouter = require('./router/loginRouter');
+const userRouter = require('./router/userRouter.js');
+const categoriesRouter = require('./router/categoriesRouter.js');
+const loginRouter = require('./router/loginRouter.js');
+const articleRouter = require('./router/articleRouter.js');
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/static/uploads', express.static('./uploads'));
 app.use(loginRouter); //与登录相关的路由,该路由不能放在其他路由后面,否则会一直重复未登录弹框
 app.use(userRouter); //与用户相关的路由
 app.use(categoriesRouter); //与分类相关的路由
+app.use(articleRouter); //与 文章分类相关的路由
 
 app.listen(3000, () => {
     console.log('running...');

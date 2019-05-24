@@ -10,7 +10,8 @@ module.exports.query = (sql, callback) => {
         host: 'localhost',
         user: 'root',
         password: 'root',
-        database: 'alibaixiu'
+        database: 'alibaixiu',
+        multipleStatements: true // 允许 mysql 同时执行多条语句
     })
     // 用户连接
     connection.connect();

@@ -19,7 +19,7 @@ module.exports = {
             // 还要将昵称渲染到页面上
             let nickname = req.session.user.nickname;
             let avatar = req.session.user.avatar;
-            res.render('users', { result: result, nickname, avatar});
+            res.render('users', { result: result, nickname, avatar });
         })
     },
 
@@ -34,10 +34,16 @@ module.exports = {
         //2. 将数据提交到数据库
         let addSql = `INSERT INTO users (slug,email,password,nickname,status) VALUES ('${parmas.slug}','${parmas.email}','${parmas.password}','${parmas.nickname}','activated')`;
         //3. 执行 SQL 语句
-        userdb.query(addSql, result => {
+        userdb.query(addSql, (err, result) => {
+            if (err) {
+                return res.send({
+                    status: 400,
+                    msg: '新增用户失败'
+                })
+            }
             res.send({
                 status: 200,
-                msg: '新增成功'
+                msg: '新增用户成功'
             })
         })
     },
@@ -48,7 +54,13 @@ module.exports = {
             return;
         }
 
-        userdb.query('SELECT * FROM users', result => {
+        userdb.query('SELECT * FROM users', (err, result) => {
+            if (err) {
+                return res.send({
+                    status: 400,
+                    msg: '数据获取失败'
+                })
+            }
             res.send({
                 data: result,
                 status: 200,
@@ -68,7 +80,13 @@ module.exports = {
         //2. 将数据删除
         let delSql = `DELETE FROM users WHERE id = ${id}`;
         //3. 执行 SQL 语句
-        userdb.query(delSql, result => {
+        userdb.query(delSql, (err, result) => {
+            if (err) {
+                return res.send({
+                    status: 400,
+                    msg: '删除不成功'
+                })
+            }
             res.send({
                 status: 200,
                 msg: '删除成功'
@@ -87,8 +105,14 @@ module.exports = {
         //2. 根据 id 查询数据
         let selSql = `SELECT * FROM users WHERE id = ${id}`;
         //3. 执行 SQL 语句
-        userdb.query(selSql, result => {
-            // console.log(result);
+        userdb.query(selSql, (err, result) => {
+            if (err) {
+                res.send({
+                    status: 400,
+                    msg: '查询失败'
+                })
+            }
+            // console.log(result[0])
             res.send({
                 status: 200,
                 msg: '查询成功',
@@ -109,7 +133,13 @@ module.exports = {
         //2. 修改数据到 mysql
         let editSql = `UPDATE users SET email = '${parmas.email}', nickname = '${parmas.nickname}', password = '${parmas.password}' WHERE id = ${parmas.id}`;
         //3. 执行SQL语句
-        userdb.query(editSql, result => {
+        userdb.query(editSql, (err, result) => {
+            if (err) {
+                return res.send({
+                    status: 400,
+                    msg: '修改失败'
+                })
+            }
             res.send({
                 status: 200,
                 msg: '修改成功'
@@ -130,7 +160,13 @@ module.exports = {
         //2. 删除多个数据
         let delSqls = `DELETE FROM users WHERE id in (${idsStr})`;
         //3. 执行 SQL 语句
-        userdb.query(delSqls, result => {
+        userdb.query(delSqls, (err, result) => {
+            if (err) {
+                return res.send({
+                    status: 400,
+                    msg: '删除不成功'
+                })
+            }
             res.send({
                 status: 200,
                 msg: '删除成功'
@@ -180,9 +216,7 @@ module.exports = {
             }
             // 当修改了个人中的图片和昵称需要将 session 中的信息进行更新
             req.session.user.nickname = fields.nickname;
-            req.session.user.avatar = fields.avatar;
-            req.session.user.slug = fields.slug;
-            req.session.user.bio = fields.bio;
+            req.session.user.avatar = fields.img;
             // 2. 将参数添加到数据库
             userdb.updateMsgById(fields, (err1, result) => {
                 if (err1) {
@@ -197,6 +231,53 @@ module.exports = {
                 })
 
             })
+        })
+    },
+
+    // 获取修改密码页面
+    getResetPwd: (req, res) => {
+        if (isXhrLogin(req, res)) {
+            return;
+        }
+        // 从 session 中获取用户名和头像
+        let nickname = req.session.user.nickname;
+        let avatar = req.session.user.avatar;
+        res.render('password-reset', { nickname, avatar });
+    },
+
+    // 修改密码
+    resetPwd: (req, res) => {
+        if (isXhrLogin(req, res)) {
+            return;
+        }
+        //1. 接收参数
+        let id = req.session.user.id;
+        userdb.getPwdById(id, (err, result) => {
+            //验证密码是否正确
+            if (req.body.old === result[0].password) {
+                //2. 将新密码存进数据库
+                userdb.resetUserPwd(id,req.body.password, (err, result) => {
+                    if (err) {
+                        return res.send({
+                            status: 400,
+                            msg: '出错了'
+                        })
+                    } else {
+                        //修改成功后清除用户的session,重新登录
+                        req.session.user = null;
+                        res.send({
+                            status: 200,
+                            msg: '密码修改成功'
+                        })
+                    }
+
+                })
+            } else {
+                res.send({
+                    status: 300,
+                    msg: '您输入的旧密码有误!'
+                })
+            }
         })
     }
 }
